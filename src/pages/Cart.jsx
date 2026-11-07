@@ -41,7 +41,7 @@ function Cart() {
     setError("");
 
     try {
-      const response = await fetch("https://pizzeria-backend-twwf.onrender.com", { 
+      const response = await fetch("https://pizzeria-backend-twwf.onrender.com/api/checkouts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
