@@ -106,5 +106,4 @@ Para este hito se utilizó un backend desarrollado con Node.js y Express, que pe
 - Recepción de las compras realizadas desde el carrito.
 
 ## Repositorio
-[
-](https://gfazzini.github.io/Proyecto.final.react/)
+https://gfazzini.github.io/Proyecto.final.react/
