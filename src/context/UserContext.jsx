@@ -3,7 +3,7 @@ import { createContext, useState } from "react";
 
 export const UserContext = createContext();
 
-const API_URL = "http://localhost:5000";
+const API_URL = "https://pizzeria-backend-twwf.onrender.com";
 
 function UserProvider({ children }) {
   const [token, setToken] = useState(null);
