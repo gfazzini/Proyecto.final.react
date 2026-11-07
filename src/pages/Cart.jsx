@@ -1,10 +1,13 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext.jsx";
 import { UserContext } from "../context/UserContext.jsx";
 
 function Cart() {
   const { cart, setCart } = useContext(CartContext);
   const { token } = useContext(UserContext);
+
+  const [mensaje, setMensaje] = useState("");
+  const [error, setError] = useState("");
 
   const aumentar = (id) => {
     setCart((cartActual) =>
@@ -32,6 +35,33 @@ function Cart() {
     (suma, pizza) => suma + pizza.price * pizza.count,
     0
   );
+
+  const pagar = async () => {
+    setMensaje("");
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/checkouts", { 
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ cart }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || "Error al realizar la compra");
+      }
+
+      setMensaje("¡Compra realizada exitosamente! 🍕");
+      setCart([]);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   return (
     <div className="container my-4">
@@ -71,7 +101,6 @@ function Cart() {
               <button
                 className="btn btn-outline-danger"
                 onClick={() => disminuir(pizza.id)}
-                aria-label={`Disminuir cantidad de ${pizza.name}`}
               >
                 −
               </button>
@@ -81,7 +110,6 @@ function Cart() {
               <button
                 className="btn btn-outline-primary"
                 onClick={() => aumentar(pizza.id)}
-                aria-label={`Aumentar cantidad de ${pizza.name}`}
               >
                 +
               </button>
@@ -94,9 +122,13 @@ function Cart() {
         Total: ${total.toLocaleString("es-CL")}
       </h3>
 
+      {mensaje && <p className="text-success mt-3">{mensaje}</p>}
+      {error && <p className="text-danger mt-3">{error}</p>}
+
       <button
         className="btn btn-success mt-3"
         disabled={!token || cart.length === 0}
+        onClick={pagar}
       >
         Pagar
       </button>
